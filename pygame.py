@@ -1,49 +1,37 @@
-# Space Invaders Game
-
-from asyncio.constants import LOG_THRESHOLD_FOR_CONNLOST_WRITES
-import os
 import pygame
-import random
+import os
 import time
+import random
 
 pygame.font.init()
 
 WIDTH, HEIGHT = 750, 750
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Invaders")
+# Load images
+# Ships
+RED_SPACE_SHIP = pygame.image.load(
+    os.path.join("assets1", "pixel_ship_red_small.png"))
+GREEN_SPACE_SHIP = pygame.image.load(
+    os.path.join("assets1", "pixel_ship_green_small.png"))
+BLUE_SPACE_SHIP = pygame.image.load(
+    os.path.join("assets1", "pixel_ship_blue_small.png"))
 
-# Images Load
-RED_SPACE_SHIP = pygame.image.load("assests/pixel_ship_red_small.png")
-RED_SPACE_SHIP = pygame.transform.scale(RED_SPACE_SHIP, (70, 70))
-RED_SPACE_SHIP = pygame.transform.rotate(RED_SPACE_SHIP, 180)
-
-GREEN_SPACE_SHIP = pygame.image.load("assests/pixel_ship_green_small.png")
-GREEN_SPACE_SHIP = pygame.transform.scale(GREEN_SPACE_SHIP, (70, 70))
-
-BLUE_SPACE_SHIP = pygame.image.load("assests/pixel_ship_blue_small.png")
-BLUE_SPACE_SHIP = pygame.transform.scale(BLUE_SPACE_SHIP, (70, 70))
-
-
-# Player Ship
-YELLOW_SPACE_SHIP = pygame.image.load("assests/testpic.png").convert_alpha()
-YELLOW_SPACE_SHIP = pygame.transform.scale(YELLOW_SPACE_SHIP, (100, 100))
+# Player ship
+YELLOW_SPACE_SHIP = pygame.image.load(
+    os.path.join("assets1", "pixel_ship_yellow.png"))
 
 # Lasers
-RED_LASER = pygame.image.load(os.path.join("assests", "pixel_laser_red.png"))
+RED_LASER = pygame.image.load(os.path.join("assets1", "pixel_laser_red.png"))
 GREEN_LASER = pygame.image.load(
-    os.path.join("assests", "pixel_laser_green.png"))
-GREEN_LASER = pygame.transform.scale(GREEN_LASER, (70, 70))
-
-BLUE_LASER = pygame.image.load(os.path.join("assests", "pixel_laser_blue.png"))
-BLUE_LASER = pygame.transform.scale(BLUE_LASER, (70, 70))
-
-
+    os.path.join("assets1", "pixel_laser_green.png"))
+BLUE_LASER = pygame.image.load(os.path.join("assets1", "pixel_laser_blue.png"))
 YELLOW_LASER = pygame.image.load(
-    os.path.join("assests", "pixel_laser_yellow.png"))
-YELLOW_LASER = pygame.transform.scale(YELLOW_LASER, (70, 70))
+    os.path.join("assets1", "pixel_laser_yellow.png"))
 
 # Background
-BG = pygame.image.load(os.path.join("assests", "background-black.png"))
+BG = pygame.transform.scale(pygame.image.load(
+    os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 
 
 class Laser:
@@ -61,8 +49,6 @@ class Laser:
 
     def off_screen(self, height):
         return not(self.y < height and self.y >= 0)
-
-    # self to test if object is colliding with myself
 
     def collision(self, obj):
         return collide(obj, self)
@@ -147,11 +133,10 @@ class Player(Ship):
 
 
 class Enemy(Ship):
-    # Enemy dict for ships and lasers
     COLOR_MAP = {
         "red": (RED_SPACE_SHIP, RED_LASER),
         "green": (GREEN_SPACE_SHIP, GREEN_LASER),
-        "blue": (BLUE_SPACE_SHIP, BLUE_LASER),
+        "blue": (BLUE_SPACE_SHIP, BLUE_LASER)
     }
 
     def __init__(self, x, y, color, health=100):
@@ -173,54 +158,45 @@ def collide(obj1, obj2):
     offset_x = obj2.x - obj1.x
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
-# Using offset to determine collision & point of intersection
-
-
-def collide(obj1, obj2):
-    offset_x = obj2.x - obj1.x
-    offset_y = obj2.y - obj1.y
-    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
 
 def main():
     run = True
     FPS = 60
     level = 0
-    LIVES = 6
-    player_velo = 5
-
-    main_font = pygame.font.SysFont("comicsans", 40)
-    lost_font = pygame.font.SysFont("comicsans", 65)
-    player = Player(300, 650)
-    clock = pygame.time.Clock()
+    lives = 5
+    lost = False
+    lost_count = 0
+    main_font = pygame.font.SysFont("comicsans", 50)
+    lost_font = pygame.font.SysFont("comicsans", 60)
 
     enemies = []
-    wave_length = 2
+    wave_length = 0
     enemy_vel = 1
     laser_vel = 4
     player_vel = 5
-    lost = False
-    lost_count = 0
+
+    player = Player(300, 630)
+
+    clock = pygame.time.Clock()
 
     def redraw_window():
         WIN.blit(BG, (0, 0))
 
-        # Draw text
-        LIVES_label = main_font.render(f"LIVES: {LIVES}", 1, (255, 0, 0))
+        # draw text
         level_label = main_font.render(f"Level: {level}", 1, (255, 255, 255))
+        lives_label = main_font.render(f"Lives: {lives}", 1, (255, 255, 255))
 
-        WIN.blit(LIVES_label, (10, 10))
+        WIN.blit(lives_label, (10, 10))
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
 
         for enemy in enemies:
             enemy.draw(WIN)
+
         player.draw(WIN)
 
-        # Losing Screen
         if lost:
-            lost_label = lost_font.render("YOU LOST!", 1, (255, 255, 255))
-
-            # draws from top left, for centering to account for extra length
+            lost_label = lost_font.render("Game over", 1, (255, 255, 255))
             WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
 
         pygame.display.update()
@@ -228,56 +204,40 @@ def main():
     while run:
         clock.tick(FPS)
         redraw_window()
-        lost_count += 1
-        if LIVES <= 0 or player.health <= 0:
+
+        if lives <= 0 or player.health <= 0:
             lost = True
             lost_count += 1
 
         if lost:
-
             if lost_count > FPS * 3:
                 run = False
             else:
                 continue
-        # Increment level when no emnemies
+
         if len(enemies) == 0:
             level += 1
             wave_length += 5
-
-            # Enemy Spawn
             for i in range(wave_length):
-                enemy = Enemy(
-                    random.randrange(50, WIDTH - 100),
-                    random.randrange(-1500, -100),
-                    random.choice(["red", "blue", "green"]),
-                )
+                enemy = Enemy(random.randrange(
+                    50, WIDTH-100), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
                 enemies.append(enemy)
 
-        # Exit Funtion
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        # Player Movement
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] and player.x - player_velo > 0:  # left
-            player.x -= player_velo
-        if (
-            keys[pygame.K_d] and player.x +
-                player_velo + player.get_width() < WIDTH
-        ):  # right
-            player.x += player_velo
-        if keys[pygame.K_w] and player.y - player_velo > 0:  # up
-            player.y -= player_velo
-        if (
-            keys[pygame.K_s] and player.y +
-                player_velo + player.get_height() < HEIGHT
-        ):  # down
-            player.y += player_velo
+        if keys[pygame.K_a] and player.x - player_vel > 0:  # move left
+            player.x -= player_vel
+        if keys[pygame.K_d] and player.x + player_vel + player.get_width() < WIDTH:  # move right
+            player.x += player_vel
+        if keys[pygame.K_w] and player.y - player_vel > 0:  # up
+            player.y -= player_vel
+        if keys[pygame.K_s] and player.y + player_vel + player.get_height() + 20 < HEIGHT:  # down
+            player.y += player_vel
         if keys[pygame.K_SPACE]:
             player.shoot()
-
-        # Enemy Movement
 
         for enemy in enemies[:]:
             enemy.move(enemy_vel)
@@ -290,7 +250,7 @@ def main():
                 player.health -= 10
                 enemies.remove(enemy)
             elif enemy.y + enemy.get_height() > HEIGHT:
-                LIVES -= 1
+                lives -= 1
                 enemies.remove(enemy)
 
         player.move_lasers(-laser_vel, enemies)
@@ -302,7 +262,7 @@ def main_menu():
     while run:
         WIN.blit(BG, (0, 0))
         title_label = title_font.render(
-            "Press to begin...", 1, (255, 255, 255))
+            "Press the mause to begin...", 1, (255, 255, 255))
         WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
         pygame.display.update()
 
