@@ -22,16 +22,18 @@ YELLOW_SPACE_SHIP = pygame.image.load(
     os.path.join("assets1", "pixel_ship_yellow.png"))
 
 # Lasers
-RED_LASER = pygame.image.load(os.path.join("assets1", "pixel_laser_red.png"))
+RED_LASER = pygame.image.load(
+    os.path.join("assets1", "pixel_laser_red.png"))
 GREEN_LASER = pygame.image.load(
     os.path.join("assets1", "pixel_laser_green.png"))
-BLUE_LASER = pygame.image.load(os.path.join("assets1", "pixel_laser_blue.png"))
+BLUE_LASER = pygame.image.load(
+    os.path.join("assets1", "pixel_laser_blue.png"))
 YELLOW_LASER = pygame.image.load(
     os.path.join("assets1", "pixel_laser_yellow.png"))
 
 # Background
 BG = pygame.transform.scale(pygame.image.load(
-    os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
+    os.path.join("assets1", "background-black.png")), (WIDTH, HEIGHT))
 
 
 class Laser:
@@ -123,9 +125,9 @@ class Player(Ship):
 
     def healthbar(self, window):
         pygame.draw.rect(window, (255, 0, 0), (self.x, self.y +
-                         self.ship_img.get_height() + 10, self.ship_img.get_width(), 10))
+                                                  self.ship_img.get_height() + 10, self.ship_img.get_width(), 10))
         pygame.draw.rect(window, (0, 255, 0), (self.x, self.y+self.ship_img.get_height() +
-                         10, self.ship_img.get_width() * (self.health/self.max_health), 10))
+                                                  10, self.ship_img.get_width() * (self.health/self.max_health), 10))
 
     def draw(self, window):
         super().draw(window)

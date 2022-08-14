@@ -1,3 +1,6 @@
 .vscode/settings.json
 .vscode/launch.json
 Space-Invader.code-workspace
+__pycache__/gamething.cpython-310.pyc
+.gitignore
+__pycache__/pygame.cpython-310.pyc

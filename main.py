@@ -1,6 +1,5 @@
 # Space Invaders Game
 
-from asyncio.constants import LOG_THRESHOLD_FOR_CONNLOST_WRITES
 import os
 import pygame
 import random
@@ -28,19 +27,16 @@ BLUE_SPACE_SHIP = pygame.transform.scale(BLUE_SPACE_SHIP, (70, 70))
 YELLOW_SPACE_SHIP = pygame.image.load("assests/testpic.png").convert_alpha()
 YELLOW_SPACE_SHIP = pygame.transform.scale(YELLOW_SPACE_SHIP, (100, 100))
 
+
 # Lasers
-RED_LASER = pygame.image.load(os.path.join("assests", "pixel_laser_red.png"))
+RED_LASER = pygame.image.load(
+    os.path.join("assets1", "pixel_laser_red.png"))
 GREEN_LASER = pygame.image.load(
-    os.path.join("assests", "pixel_laser_green.png"))
-GREEN_LASER = pygame.transform.scale(GREEN_LASER, (70, 70))
-
-BLUE_LASER = pygame.image.load(os.path.join("assests", "pixel_laser_blue.png"))
-BLUE_LASER = pygame.transform.scale(BLUE_LASER, (70, 70))
-
-
+    os.path.join("assets1", "pixel_laser_green.png"))
+BLUE_LASER = pygame.image.load(
+    os.path.join("assets1", "pixel_laser_blue.png"))
 YELLOW_LASER = pygame.image.load(
-    os.path.join("assests", "pixel_laser_yellow.png"))
-YELLOW_LASER = pygame.transform.scale(YELLOW_LASER, (70, 70))
+    os.path.join("assets1", "pixel_laser_yellow.png"))
 
 # Background
 BG = pygame.image.load(os.path.join("assests", "background-black.png"))
